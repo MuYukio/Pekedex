@@ -1,35 +1,41 @@
-Pokédex em React:
+## Pokédex em React:
 
-Este projeto é uma Pokédex interativa desenvolvida com React e TypeScript, que consome dados da PokeAPI. A aplicação permite buscar e visualizar informações detalhadas sobre diversos Pokémon.
+  Este projeto é uma Pokédex interativa desenvolvida com React e TypeScript, que consome dados da PokeAPI. A aplicação permite buscar e visualizar informações detalhadas sobre diversos Pokémon.
 
-Funcionalidades:
+## Funcionalidades:
 
-Busca por nome ou número do Pokémon.
+  .Busca por nome ou número do Pokémon.
 
-Exibição de detalhes como imagem, número e descrição.
+  .Exibição de detalhes como imagem, número e descrição.
 
-Carregamento incremental de Pokémon.
+  .Carregamento incremental de Pokémon.
 
-Interface responsiva e estilizada com styled-components.
+  .Interface responsiva e estilizada com styled-components.
 
-Tecnologias Utilizadas:
+## Tecnologias Utilizadas:
 
-React
+  .React
 
-TypeScript
+  .TypeScript
 
-Axios
+  . Axios
 
-React Router
+  .React Router
 
-Styled Components
+  .Styled Components
 
-Estrutura do Projeto:
+## Estrutura do Projeto:
 
-src/components/: Componentes reutilizáveis, como PokeCard.
+  .src/components/: Componentes reutilizáveis, como PokeCard.
 
-src/pages/: Páginas principais da aplicação, como Home e PokeDetails.
+  .src/pages/: Páginas principais da aplicação, como Home e PokeDetails.
 
-src/services/: Funções para consumo da API.
+  .src/services/: Funções para consumo da API.
 
-src/styles/: Estilizações com styled-components.
+  .src/styles/: Estilizações com styled-components.
+
+## Como executar
+1. Clone o repositório
+2. Rode `npm install`
+3. Rode `npm run dev` (ou `yarn dev`)
+
