@@ -24,7 +24,7 @@ React Router
 
 Styled Components
 
-Estrutura do Projeto
+Estrutura do Projeto:
 
 src/components/: Componentes reutilizáveis, como PokeCard.
 
