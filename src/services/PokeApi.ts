@@ -47,7 +47,7 @@ export async function fetchPoke(idOrName: number | string): Promise<Poke> {
   }
 
   export async function fetchPokeList(
-    limit = 20,
+    limit = 0,
     offset = 0
   ): Promise<PokeListItem[]> {
     try {

@@ -2,10 +2,20 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import type { Poke } from "../types/Poke";
 import { fetchPoke } from "../services/PokeApi";
-import { Container, Info, Title, Image, ContainerImage } from "./PokeDetails.styled";
+import {
+  Container,
+  Info,
+  Title,
+  Image,
+  ContainerImage,
+  BackLink,
+  Number,
+  DescriptionTitle,
+  ImageWrapper,
+  ImageLabel
+} from "./PokeDetails.styled";
 
 export function PokeDetails() {
-  // aqui "id" vem da URL /pokemon/:id
   const { id } = useParams<{ id: string }>();
   const [poke, setPoke] = useState<Poke | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -15,7 +25,7 @@ export function PokeDetails() {
       setError("Parâmetro inválido.");
       return;
     }
-    // usa lowerCase para evitar 404 por case-sensitive
+
     fetchPoke(id.toLowerCase())
       .then(setPoke)
       .catch((err) => {
@@ -24,23 +34,31 @@ export function PokeDetails() {
       });
   }, [id]);
 
-  if (error) return (
-    <Container>
-      <Link to="/">← Voltar</Link>
-      <p>{error}</p>
-    </Container>
-  );
+  if (error)
+    return (
+      <Container>
+        <Link to="/">← Voltar</Link>
+        <p>{error}</p>
+      </Container>
+    );
   if (!poke) return <p>Carregando…</p>;
 
   return (
     <Container>
-      <Link to="/">← Voltar</Link>
+      <BackLink href="/">← Voltar</BackLink>
       <ContainerImage>
-        <Image src={poke.front_default} alt={poke.name}/>
-        <Image src={poke.front_shiny} alt={`${poke.name} shiny`}/>
+        <ImageWrapper>
+          <Image src={poke.front_default} alt={poke.name} />
+          <ImageLabel>Forma Normal</ImageLabel>
+        </ImageWrapper>
+        <ImageWrapper>
+          <Image src={poke.front_shiny} alt={`${poke.name} shiny`} />
+          <ImageLabel>Forma Shiny</ImageLabel>
+        </ImageWrapper>
       </ContainerImage>
       <Title>{poke.name}</Title>
-      <a>Numero:#{poke.order}</a>
+      <Number>Número: #{poke.order}</Number>
+      <DescriptionTitle>Descrição</DescriptionTitle>
       <Info>{poke.description}</Info>
     </Container>
   );

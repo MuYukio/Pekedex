@@ -1,28 +1,53 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-export const Card = styled.div`
-    background: #f3efef;
-    border-radius: 8px;
-    border: solid 1px black;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.342);
-    padding: 1rem;
-    transition: transform 0.2s ease;
+export const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-    &:hover{
-        transform: scale(1.02);
-    }
-`
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+`;
+
+export const Card = styled.div`
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+`;
+
 export const Image = styled.img`
-    width: 100%;
-    border-radius: 8px;
-`
+  width: 100%;
+  height: 300px;
+  object-fit: contain;
+  background-color: #f9f9f9;
+  padding: 1rem;
+`;
+
 export const Title = styled.h2`
-    margin: 0.5rem 0;
-    font-size: 1.2rem;
-    text-decoration: none;
-`
+  margin: 1rem 1rem 0.5rem;
+  font-size: 1.5rem;
+  text-transform: capitalize;
+  color: #333333;
+`;
+
 export const Info = styled.p`
-    color: #555;
-    font-size: 0.9rem;
-    text-decoration: none;
-`
+  margin: 0 1rem 1rem;
+  color: #666666;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  flex-grow: 1;
+`;
