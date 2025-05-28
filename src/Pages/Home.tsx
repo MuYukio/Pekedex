@@ -6,7 +6,13 @@ import { PokeCard } from "../components/PokeCard";
 import type { PokeListItem } from "../types/PokeListItem";
 import { Navbar } from "../components/Navbar";
 
-export function Home() {
+interface HomeProps {
+  darkMode: boolean;
+  toggleTheme: () => void;
+}
+
+
+export function Home({ darkMode, toggleTheme }: HomeProps) {
   const [pokes, setPokes] = useState<Poke[]>([]);
   const [search, setSearch] = useState('');
   const [offset, setOffset] = useState(0);
@@ -59,7 +65,7 @@ export function Home() {
 
   return (
     <>
-      <Navbar search={search} setSearch={setSearch} handleSearch={handleSearch} />
+      <Navbar search={search} setSearch={setSearch} handleSearch={handleSearch} toggleTheme={toggleTheme} darkMode={darkMode} />
       <Container>
         <Grid>
           {pokes.map((poke) => (

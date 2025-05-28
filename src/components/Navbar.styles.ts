@@ -21,7 +21,7 @@ export const Title = styled.h1`
   color: #333333;
   margin: 0;
   flex: 1;
-  
+  width: auto;
 `;
 
 export const SearchContainer = styled.div`
@@ -54,4 +54,17 @@ export const SearchButton = styled.button`
   &:hover {
     background-color: #0056b3;
   }
+`;
+export const ThemeToggleButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+`;
+
+export const ThemeIcon = styled.img`
+  width: 60px;
+  height: 60px;
 `;

@@ -25,8 +25,8 @@ export async function fetchPoke(idOrName: number | string): Promise<Poke> {
   
       // Extrai dados da resposta básica
       const data = basic.data;
-      const front_default = data.sprites.front_default;
-      const front_shiny   = data.sprites.front_shiny;
+      const front_default = data.sprites.other.showdown.front_default;
+      const front_shiny   = data.sprites.other.showdown.front_shiny;
       const name          = data.name;
       const order         = data.order;
   
