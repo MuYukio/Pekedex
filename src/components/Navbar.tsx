@@ -9,6 +9,9 @@ import {
   ThemeToggleButton,
   ThemeIcon
 } from './Navbar.styles';
+import { useTheme } from 'styled-components';
+
+
 
 interface NavbarProps {
   search: string;
@@ -19,9 +22,10 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ search, setSearch, handleSearch, toggleTheme, darkMode }) => {
+  const theme = useTheme();
   return (
     <NavbarContainer>
-      <Logo src="/src/image/pokebola.png" alt="Logo" />
+    <Logo src={theme.logo} alt="Logo" />
       <Title>Pokédex</Title>
 
       <SearchContainer>

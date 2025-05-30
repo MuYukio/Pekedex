@@ -1,14 +1,16 @@
 import styled from 'styled-components';
 
+
 export const NavbarContainer = styled.nav`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.navbarBackground};
   padding: 1.5rem 2.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   flex-wrap: wrap;
   gap:2rem;
+  border: dashed 1px ${({ theme }) => theme.color};
 `;
 
 export const Logo = styled.img`
@@ -18,7 +20,7 @@ export const Logo = styled.img`
 
 export const Title = styled.h1`
   font-size: 2.5rem;
-  color: #333333;
+  color: ${({ theme }) => theme.color};
   margin: 0;
   flex: 1;
   width: auto;
@@ -38,21 +40,27 @@ export const SearchContainer = styled.div`
 export const SearchInput = styled.input`
   padding: 0.75rem 3rem;
   width: auto;
-  border: 1px solid #cccccc;
+  background-color: ${({ theme }) => theme.inputBackground};
+  color: ${({ theme }) => theme.color};
   border-radius: 4px;
   flex: 1;
+
+  &::placeholder {
+    color: ${({ theme })=> theme.inputcolor};
+  }
+
 `;
 
 export const SearchButton = styled.button`
-  background-color: #007bff;
-  color: #ffffff;
+  background-color: ${({ theme }) => theme.buttonBackground};
+  color: ${({ theme }) => theme.buttonColor};
   border: none;
   padding: 0.75rem 1.25rem;
   border-radius: 4px;
   cursor: pointer;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #218838;
   }
 `;
 export const ThemeToggleButton = styled.button`

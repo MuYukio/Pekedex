@@ -6,6 +6,14 @@ declare module 'styled-components' {
     background: string;
     text: string;
     link: string;
-
+    navbarBackground: string;
+    cardBackground: string;
+    inputBackground: string;
+    buttonBackground: string;
+    buttonColor: string;
+    color: string;
+    inputcolor: string;
+    fundo:string;
+    logo:string;
   }
 }

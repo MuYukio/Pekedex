@@ -14,10 +14,11 @@ export const StyledLink = styled(Link)`
 `;
 
 export const Card = styled.div`
-  background: #ffffff;
+  background-color: ${({ theme }) => theme.cardBackground};
+  color: ${({ theme }) => theme.color};
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #e0e0e0;
+  border: 2px solid ${({ theme })=> theme.inputcolor};;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
   display: flex;
@@ -33,7 +34,9 @@ export const Image = styled.img`
   width: 100%;
   height: 300px;
   object-fit: contain;
-  background-color: #f9f9f9;
+  background-size: cover;
+  background-position: center;
+  background-image: url(${({theme}) => theme.fundo});
   padding: 1rem;
 `;
 
@@ -41,12 +44,12 @@ export const Title = styled.h2`
   margin: 1rem 1rem 0.5rem;
   font-size: 1.5rem;
   text-transform: capitalize;
-  color: #333333;
+  color: ${({theme}) => theme.color}
 `;
 
 export const Info = styled.p`
   margin: 0 1rem 1rem;
-  color: #666666;
+  color: ${({theme}) => theme.color};
   font-size: 0.95rem;
   line-height: 1.4;
   flex-grow: 1;
