@@ -15,5 +15,9 @@ declare module 'styled-components' {
     inputcolor: string;
     fundo:string;
     logo:string;
+    pokeNumber: string;
+    primary: string;
+    secondary: string;
+    hover: string;
   }
 }

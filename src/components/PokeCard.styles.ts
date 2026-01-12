@@ -14,11 +14,13 @@ export const StyledLink = styled(Link)`
 `;
 
 export const Card = styled.div`
+  position: relative; 
+
   background-color: ${({ theme }) => theme.cardBackground};
   color: ${({ theme }) => theme.color};
   border-radius: 12px;
   overflow: hidden;
-  border: 2px solid ${({ theme })=> theme.inputcolor};;
+  border: 2px solid ${({ theme }) => theme.inputcolor};
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
   display: flex;
@@ -39,10 +41,19 @@ export const Image = styled.img`
   background-image: url(${({theme}) => theme.fundo});
   padding: 1rem;
 `;
+export const PokeNumber = styled.span`
+  
+  font-weight: 600;
+  
+  color: ${({ theme }) => theme.pokeNumber};
+`;
 
 export const Title = styled.h2`
   margin: 1rem 1rem 0.5rem;
   font-size: 1.5rem;
+  gap: 0.5rem;
+  display: flex;
+  align-self: center;
   text-transform: capitalize;
   color: ${({theme}) => theme.color}
 `;

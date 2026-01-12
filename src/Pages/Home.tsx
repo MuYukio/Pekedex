@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { Container, Grid, LoadMoreButton } from "./Home.styles";
-import type { Poke } from "../types/Poke";
-import { fetchPoke, fetchPokeList } from "../services/PokeApi";
+import { fetchPoke, fetchPokeList, fetchPokeListItem } from "../services/PokeApi";
 import { PokeCard } from "../components/PokeCard";
-import type { PokeListItem } from "../types/PokeListItem";
 import { Navbar } from "../components/Navbar";
+import type { PokeList } from "../types/types";
 
 interface HomeProps {
   darkMode: boolean;
@@ -13,29 +12,30 @@ interface HomeProps {
 
 
 export function Home({ darkMode, toggleTheme }: HomeProps) {
-  const [pokes, setPokes] = useState<Poke[]>([]);
-  const [search, setSearch] = useState('');
+
+  const [pokes, setPokes] = useState<PokeList[]>([]);
   const [offset, setOffset] = useState(0);
   const limit = 21;
 
+  const [search, setSearch] = useState("");
+ 
+  
   useEffect(() => {
     loadPokemons(0);
   }, []);
 
-  const loadPokemons = async (offsetValue: number) => {
+   const loadPokemons = async (offsetValue: number) => {
     try {
-      const list: PokeListItem[] = await fetchPokeList(limit, offsetValue);
-      const details = await Promise.all(
-        list.map((item) => fetchPoke(item.name))
-      );
+      const list = await fetchPokeList(limit, offsetValue);
+      const details = await Promise.all(list.map(item => fetchPokeListItem(item.name)));
 
-      setPokes((prevPokes) => {
-        const existingNames = new Set(prevPokes.map((p) => p.name));
-        const newPokes = details.filter((p) => !existingNames.has(p.name));
-        return [...prevPokes, ...newPokes];
+      setPokes(prev => {
+        const existingNames = new Set(prev.map(p => p.name));
+        const newPokes = details.filter(p => !existingNames.has(p.name));
+        return [...prev, ...newPokes];
       });
     } catch (err) {
-      console.error("Erro ao carregar Pokémon:", err);
+      console.error(err);
     }
   };
 
@@ -45,17 +45,19 @@ export function Home({ darkMode, toggleTheme }: HomeProps) {
     loadPokemons(newOffset);
   };
 
-  const handleSearch = async () => {
-    if (!search.trim()) {
+  const handleSearch = async (searchTerm?: string) => {
+    const query = searchTerm ?? search;
+    if (!query.trim()) {
       setPokes([]);
       setOffset(0);
       loadPokemons(0);
       return;
     }
+
     try {
-      setPokes([]);
-      const result: Poke = await fetchPoke(search.toLowerCase());
+      const result = await fetchPoke(query);
       setPokes([result]);
+
       setOffset(0);
     } catch (err) {
       console.error("Erro na busca:", err);
@@ -63,10 +65,21 @@ export function Home({ darkMode, toggleTheme }: HomeProps) {
     }
   };
 
+
+
+
   return (
     <>
-      <Navbar search={search} setSearch={setSearch} handleSearch={handleSearch} toggleTheme={toggleTheme} darkMode={darkMode} />
+      <Navbar
+        search={search}
+        setSearch={setSearch}
+        handleSearch={handleSearch}
+        darkMode={darkMode}
+        toggleTheme={toggleTheme}
+      />
+      
       <Container>
+        
         <Grid>
           {pokes.map((poke) => (
             <PokeCard key={poke.name} poke={poke} />

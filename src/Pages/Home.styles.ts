@@ -13,7 +13,7 @@ export const Grid = styled.div`
 `;
 
 export const LoadMoreButton = styled.button`
-  background-color: #28a745;
+  background-color: ${({ theme }) => theme.primary};
   color: #ffffff;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -23,6 +23,6 @@ export const LoadMoreButton = styled.button`
   display: block;
 
   &:hover {
-    background-color: #218838;
+    background-color: ${({ theme }) => theme.hover};
   }
 `;

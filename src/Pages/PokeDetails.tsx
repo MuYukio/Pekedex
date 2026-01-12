@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import type { Poke } from "../types/Poke";
+import { useParams } from "react-router-dom";
+import type { PokeDetails, PokemonStat } from "../types/types";
 import { fetchPoke } from "../services/PokeApi";
 import {
   Container,
@@ -12,54 +12,74 @@ import {
   Number,
   DescriptionTitle,
   ImageWrapper,
-  ImageLabel
+  ImageLabel,
+  StatContainer,
+  StatName,
+  StatBarBackground,
+  StatBarFill
 } from "./PokeDetails.styled";
+
 
 export function PokeDetails() {
   const { id } = useParams<{ id: string }>();
-  const [poke, setPoke] = useState<Poke | null>(null);
+  const [poke, setPoke] = useState<PokeDetails | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [sprite, setSprite] = useState<"normal" | "shiny">("normal");
 
-  useEffect(() => {
-    if (!id) {
-      setError("Parâmetro inválido.");
-      return;
+ useEffect(() => {
+  async function loadPokemon() {
+    try {
+      const result = await fetchPoke(id!.toLowerCase()); 
+      setPoke(result);
+    } catch (err) {
+      console.error(err);
+      setError("Não foi possível carregar o Pokémon.");
     }
+  }
 
-    fetchPoke(id.toLowerCase())
-      .then(setPoke)
-      .catch((err) => {
-        console.error("Erro ao buscar detalhes:", err);
-        setError("Não foi possível carregar o Pokémon.");
-      });
-  }, [id]);
+  if (id) loadPokemon(); 
+}, [id]);
 
-  if (error)
-    return (
-      <Container>
-        <Link to="/">← Voltar</Link>
-        <p>{error}</p>
-      </Container>
-    );
+  if (error) return <p>{error}</p>;
   if (!poke) return <p>Carregando…</p>;
+
+  const getImage = () => (sprite === "normal" ? poke.image : poke.shiny);
 
   return (
     <Container>
       <BackLink href="/">← Voltar</BackLink>
+
       <ContainerImage>
-        <ImageWrapper>
-          <Image src={poke.front_default} alt={poke.name} />
+        <ImageWrapper onClick={() => setSprite("normal")}>
+          <Image src={poke.image} alt={poke.name} />
           <ImageLabel>Forma Normal</ImageLabel>
         </ImageWrapper>
-        <ImageWrapper>
-          <Image src={poke.front_shiny} alt={`${poke.name} shiny`} />
+
+        <ImageWrapper onClick={() => setSprite("shiny")}>
+          <Image src={poke.shiny} alt={`${poke.name} shiny`} />
           <ImageLabel>Forma Shiny</ImageLabel>
         </ImageWrapper>
       </ContainerImage>
-      <Title>{poke.name}</Title>
-      <Number>Número: #{poke.order}</Number>
+
+      <Title>
+        <Number>#{poke.id}</Number>
+        {poke.name}
+      </Title>
+
       <DescriptionTitle>Descrição</DescriptionTitle>
       <Info>{poke.description}</Info>
+
+      <DescriptionTitle>Stats</DescriptionTitle>
+      <div>
+        {poke.stats.map((stat: PokemonStat) => (
+          <StatContainer key={stat.name}>
+            <StatName>{stat.name}</StatName>
+            <StatBarBackground>
+              <StatBarFill value={stat.value} />
+            </StatBarBackground>
+          </StatContainer>
+        ))}
+      </div>
     </Container>
   );
 }
