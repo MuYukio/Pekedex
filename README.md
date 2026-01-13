@@ -1,41 +1,65 @@
 ## Pokédex em React:
 
-  Este projeto é uma Pokédex interativa desenvolvida com React e TypeScript, que consome dados da PokeAPI. A aplicação permite buscar e visualizar informações detalhadas sobre diversos Pokémon.
+  Este projeto é uma **Pokédex interativa** desenvolvida com **React** e **TypeScript**, que consome dados da **PokeAPI**.  
+  A aplicação permite buscar e visualizar informações detalhadas sobre diversos Pokémon de forma simples e intuitiva.
+
 
 ## Funcionalidades:
 
-  .Busca por nome ou número do Pokémon.
-
-  .Exibição de detalhes como imagem, número e descrição.
-
-  .Carregamento incremental de Pokémon.
-
-  .Interface responsiva e estilizada com styled-components.
+- Busca por nome ou número do Pokémon
+- Exibição de detalhes como imagem, número e descrição
+- Carregamento incremental de Pokémon
+- Interface responsiva
+- Estilização utilizando **styled-components**
 
 ## Tecnologias Utilizadas:
 
-  .React
+- React
+- TypeScript
+- Axios
+- React Router
+- Styled Components
 
-  .TypeScript
+## Estrutura do Projeto
 
-  . Axios
+```text
+src/
+├── components/           # Componentes reutilizáveis
+│   ├── Navbar/           # Barra de navegação com busca e toggle de tema
+│   └── PokeCard/         # Card do Pokémon exibido na Home
+│
+├── pages/                # Páginas principais da aplicação
+│   ├── Home.tsx          # Página inicial com grid de Pokémon
+│   └── PokeDetails.tsx   # Detalhes do Pokémon (stats, shiny toggle, evoluções)
+│
+├── services/             # Comunicação com a PokeAPI
+│   └── PokeApi.ts        # Funções fetchPokeList, fetchPoke, etc.
+│
+├── styles/               # Estilos globais e sistema de temas
+│   ├── global.ts         # Estilos globais e reset CSS
+│   ├── themes.ts         # Temas (lightTheme e darkTheme)
+│   └── styled.d.ts       # Extensão de tipagem do styled-components
+│
+├── types/                # Tipagens TypeScript
+│   └── types.ts          # Interfaces (PokeDetails, PokemonStat, etc.)
+│
+├── utils/                # Funções utilitárias
+│   └── statsUtils.ts     # Normalização e cores dos status
+```
+## Como Executar o Projeto
 
-  .React Router
+```bash
+# Clone o repositório
+git clone https://github.com/seu-usuario/seu-repositorio.git
 
-  .Styled Components
+# Acesse a pasta do projeto
+cd seu-repositorio
 
-## Estrutura do Projeto:
+# Instale as dependências
+npm install
 
-  .src/components/: Componentes reutilizáveis, como PokeCard.
-
-  .src/pages/: Páginas principais da aplicação, como Home e PokeDetails.
-
-  .src/services/: Funções para consumo da API.
-
-  .src/styles/: Estilizações com styled-components.
-
-## Como executar
-1. Clone o repositório
-2. Rode `npm install`
-3. Rode `npm run dev` (ou `yarn dev`)
+# Execute a aplicação
+npm run dev
+# ou
+yarn dev
 
