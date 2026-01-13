@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
   NavbarContainer,
+  LogoContainer,
   Logo,
   Title,
   SearchContainer,
@@ -9,16 +10,19 @@ import {
   ThemeToggleButton,
   ThemeIcon,
   SuggestionsList,
-  SuggestionItem
+  SuggestionItem,
+  LoadingIndicator,
+  NoResults
 } from './Navbar.styles';
 import { useTheme } from 'styled-components';
 import { fetchPokeList } from '../services/PokeApi';
-import type { PokeListItem } from '../types/PokeListItem';
+import type { PokeListItem } from '../types/types';
+import { FaSearch } from 'react-icons/fa';
 
 interface NavbarProps {
   search: string;
   setSearch: (value: string) => void;
-  handleSearch: (name?: string) => void; // busca ao selecionar
+  handleSearch: (name?: string) => void;
   toggleTheme: () => void;
   darkMode: boolean;
 }
@@ -32,94 +36,144 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const theme = useTheme();
   const [suggestions, setSuggestions] = useState<PokeListItem[]>([]);
-  const [activeIndex, setActiveIndex] = useState(-1); // índice ativo para setas
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const suggestionsRef = useRef<HTMLUListElement>(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
-  // Atualiza sugestões ao digitar
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && 
+          !searchContainerRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (search.trim() && showSuggestions) {
+        fetchSuggestions();
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [search, showSuggestions]);
+
+  const fetchSuggestions = useCallback(async () => {
     if (!search.trim()) {
       setSuggestions([]);
-      setActiveIndex(-1);
       return;
     }
 
-    async function fetchSuggestions() {
-      try {
-        const allPokemons = await fetchPokeList(1000, 0); // pega todos os nomes
-        const filtered = allPokemons.filter(p =>
-          p.name.toLowerCase().includes(search.toLowerCase())
-        );
-        setSuggestions(filtered.slice(0, 5));
-        setActiveIndex(-1);
-      } catch (err) {
-        console.error('Erro ao buscar sugestões:', err);
-      }
+    setLoadingSuggestions(true);
+    try {
+      const allPokemons = await fetchPokeList(1000, 0);
+      const filtered = allPokemons.filter(p =>
+        p.name.toLowerCase().includes(search.toLowerCase())
+      );
+      setSuggestions(filtered.slice(0, 8));
+    } catch (err) {
+      console.error('Erro ao buscar sugestões:', err);
+      setSuggestions([]);
+    } finally {
+      setLoadingSuggestions(false);
     }
-
-    fetchSuggestions();
   }, [search]);
 
-  // Teclas: setas e Enter
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (suggestions.length === 0) return;
+    if (!showSuggestions || suggestions.length === 0) return;
 
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      setActiveIndex(prev => (prev + 1) % suggestions.length);
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      setActiveIndex(prev => (prev - 1 + suggestions.length) % suggestions.length);
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      if (activeIndex >= 0) {
-        // seleciona sugestão ativa
-        selectSuggestion(suggestions[activeIndex].name);
-      } else {
-        handleSearch(search); // busca normal se não tiver selecionado
-      }
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setActiveIndex(prev => (prev + 1) % suggestions.length);
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setActiveIndex(prev => (prev - 1 + suggestions.length) % suggestions.length);
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (activeIndex >= 0) {
+          selectSuggestion(suggestions[activeIndex].name);
+        } else {
+          handleSearch(search);
+          setShowSuggestions(false);
+        }
+        break;
+      case 'Escape':
+        setShowSuggestions(false);
+        setActiveIndex(-1);
+        break;
     }
   };
 
-  // Selecionar sugestão via click ou Enter
   const selectSuggestion = (name: string) => {
-    setSearch(name);       // atualiza input
-    handleSearch(name);    // realiza busca imediatamente
-    setSuggestions([]);    // fecha lista
+    setSearch(name);
+    handleSearch(name);
+    setShowSuggestions(false);
     setActiveIndex(-1);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    setShowSuggestions(true);
+    setActiveIndex(-1);
+  };
+
+  const handleSearchClick = () => {
+    handleSearch(search);
+    setShowSuggestions(false);
   };
 
   return (
     <NavbarContainer>
-      <Logo src={theme.logo} alt="Logo" />
-      <Title>Pokédex</Title>
+      <LogoContainer>
+        <Logo src={theme.logo} alt="Pokébola" />
+        <Title>Pokédex</Title>
+      </LogoContainer>
 
-      <SearchContainer>
+      <SearchContainer ref={searchContainerRef}>
         <SearchInput
           type="text"
-          placeholder="Buscar Pokémon"
+          placeholder="Buscar Pokémon pelo nome..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={handleInputChange}
           onKeyDown={handleKeyDown}
+          onFocus={() => setShowSuggestions(true)}
         />
 
-        {suggestions.length > 0 && (
+        <SearchButton onClick={handleSearchClick}>
+          <FaSearch /> Buscar
+        </SearchButton>
+
+        {showSuggestions && search.trim() && (
           <SuggestionsList ref={suggestionsRef}>
-            {suggestions.map((p, index) => (
-              <SuggestionItem
-                key={p.name}
-                onClick={() => selectSuggestion(p.name)}
-                active={index === activeIndex}
-              >
-                {p.name}
-              </SuggestionItem>
-            ))}
+            {loadingSuggestions ? (
+              <LoadingIndicator>Carregando...</LoadingIndicator>
+            ) : suggestions.length > 0 ? (
+              suggestions.map((pokemon, index) => (
+                <SuggestionItem
+                  key={pokemon.name}
+                  onClick={() => selectSuggestion(pokemon.name)}
+                  active={index === activeIndex}
+                >
+                  {pokemon.name}
+                </SuggestionItem>
+              ))
+            ) : (
+              <NoResults>Nenhum Pokémon encontrado</NoResults>
+            )}
           </SuggestionsList>
         )}
-
-        <SearchButton onClick={() => handleSearch(search)}>Buscar</SearchButton>
       </SearchContainer>
 
-      <ThemeToggleButton onClick={toggleTheme}>
+      <ThemeToggleButton onClick={toggleTheme} title={darkMode ? "Modo Claro" : "Modo Escuro"}>
         <ThemeIcon
           src={darkMode ? "/src/image/umbreon.png" : "/src/image/espeon.png"}
           alt={darkMode ? "Tema claro" : "Tema escuro"}

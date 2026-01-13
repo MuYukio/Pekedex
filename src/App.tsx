@@ -8,12 +8,10 @@ import { PokeDetails } from './Pages/PokeDetails';
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
-    
     const savedTheme = localStorage.getItem('theme');
     return savedTheme === 'dark';
   });
 
-  
   useEffect(() => {
     localStorage.setItem('theme', darkMode ? 'dark' : 'light');
   }, [darkMode])
@@ -31,7 +29,8 @@ function App() {
             path="/"
             element={<Home darkMode={darkMode} toggleTheme={toggleTheme} />}
           />
-          <Route path="/poke/:id" element={<PokeDetails />} />
+          
+          <Route path="/pokemon/:id" element={<PokeDetails />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

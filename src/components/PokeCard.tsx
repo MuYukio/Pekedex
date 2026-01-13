@@ -1,4 +1,4 @@
-import type { PokeList } from "../types/PokeList";
+import type { PokeList } from "../types/types";
 import { Card, Title, Image, StyledLink, PokeNumber } from "./PokeCard.styles";
 
 interface PokeCardProps {
@@ -7,7 +7,7 @@ interface PokeCardProps {
 
 export function PokeCard({ poke }: PokeCardProps) {
   return (
-    <StyledLink to={`/poke/${poke.name}`}>
+    <StyledLink to={`/pokemon/${poke.id}`}>
       <Card>
         <Image src={poke.image} alt={poke.name} />
         <Title>
