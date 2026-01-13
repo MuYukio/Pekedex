@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // Alterado: adicionado useNavigate
 import type { PokeDetails, PokemonStat } from "../types/types";
 import { fetchPoke } from "../services/PokeApi";
 import {
@@ -8,78 +8,172 @@ import {
   Title,
   Image,
   ContainerImage,
-  BackLink,
+  BackButton,
   Number,
   DescriptionTitle,
   ImageWrapper,
-  ImageLabel,
   StatContainer,
   StatName,
   StatBarBackground,
-  StatBarFill
+  StatBarFill,
+  StatValue,
+  TypeBadge,
+  TypesContainer,
+  InfoCard,
+  InfoGrid,
+  InfoItem,
+  ShinyToggleButton,
+  EvolutionChain,
+  EvolutionItem, // Adicionado novo componente
+  LoadingSpinner,
+  ErrorMessage,
+  CurrentFormLabel,
+  ImageContainer
 } from "./PokeDetails.styled";
-
+import { FaArrowLeft, FaStar, FaWeight, FaRulerVertical, FaExchangeAlt } from 'react-icons/fa';
+import { getStatColor, normalizeStat } from "../utils/statsNormalizer";
 
 export function PokeDetails() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate(); // Adicionado hook de navegação
   const [poke, setPoke] = useState<PokeDetails | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [sprite, setSprite] = useState<"normal" | "shiny">("normal");
+  const [loading, setLoading] = useState(true);
+  const [isShiny, setIsShiny] = useState(false);
 
- useEffect(() => {
-  async function loadPokemon() {
-    try {
-      const result = await fetchPoke(id!.toLowerCase()); 
-      setPoke(result);
-    } catch (err) {
-      console.error(err);
-      setError("Não foi possível carregar o Pokémon.");
+  useEffect(() => {
+    async function loadPokemon() {
+      try {
+        setLoading(true);
+        const result = await fetchPoke(id!.toLowerCase());
+        setPoke(result);
+        setError(null);
+      } catch (err) {
+        console.error(err);
+        setError("Não foi possível carregar o Pokémon.");
+      } finally {
+        setLoading(false);
+      }
     }
-  }
 
-  if (id) loadPokemon(); 
-}, [id]);
+    if (id) loadPokemon();
+  }, [id]);
 
-  if (error) return <p>{error}</p>;
-  if (!poke) return <p>Carregando…</p>;
+  const toggleShiny = () => {
+    setIsShiny(!isShiny);
+  };
 
-  const getImage = () => (sprite === "normal" ? poke.image : poke.shiny);
+  // Função para navegar para outro Pokémon
+  const handleEvolutionClick = (evolutionId: number) => {
+    navigate(`/pokemon/${evolutionId}`);
+  };
+
+  if (loading) return <LoadingSpinner>Carregando...</LoadingSpinner>;
+  if (error) return <ErrorMessage>{error}</ErrorMessage>;
+  if (!poke) return null;
+
+  const currentImage = isShiny ? poke.shiny : poke.image;
+  const currentFormLabel = isShiny ? "Forma Shiny" : "Forma Normal";
 
   return (
     <Container>
-      <BackLink href="/">← Voltar</BackLink>
+      <BackButton to="/">
+        <FaArrowLeft /> Voltar para Pokédex
+      </BackButton>
 
-      <ContainerImage>
-        <ImageWrapper onClick={() => setSprite("normal")}>
-          <Image src={poke.image} alt={poke.name} />
-          <ImageLabel>Forma Normal</ImageLabel>
-        </ImageWrapper>
+      <InfoCard>
+        {/* Header com número e nome */}
+        <Title>
+          <Number>#{poke.id.toString().padStart(3, '0')}</Number>
+          {poke.name}
+        </Title>
 
-        <ImageWrapper onClick={() => setSprite("shiny")}>
-          <Image src={poke.shiny} alt={`${poke.name} shiny`} />
-          <ImageLabel>Forma Shiny</ImageLabel>
-        </ImageWrapper>
-      </ContainerImage>
+        {/* Tipos do Pokémon */}
+        <TypesContainer>
+          {poke.types?.map((type) => (
+            <TypeBadge key={type} type={type}>
+              {type}
+            </TypeBadge>
+          ))}
+        </TypesContainer>
 
-      <Title>
-        <Number>#{poke.id}</Number>
-        {poke.name}
-      </Title>
+        {/* Container da imagem única */}
+        <ContainerImage>
+          <ImageContainer>
+            <ImageWrapper>
+              <Image
+                src={currentImage}
+                alt={isShiny ? `${poke.name} shiny` : poke.name}
+              />
+              <CurrentFormLabel>
+                {isShiny && <FaStar style={{ marginRight: '8px' }} />}
+                {currentFormLabel}
+              </CurrentFormLabel>
+            </ImageWrapper>
 
-      <DescriptionTitle>Descrição</DescriptionTitle>
-      <Info>{poke.description}</Info>
+            <ShinyToggleButton
+              onClick={toggleShiny}
+              isActive={isShiny}
+            >
+              <FaExchangeAlt />
+              {isShiny ? "Ver Normal" : "Ver Shiny"}
+              {isShiny && <FaStar style={{ marginLeft: '8px' }} />}
+            </ShinyToggleButton>
+          </ImageContainer>
+        </ContainerImage>
 
-      <DescriptionTitle>Stats</DescriptionTitle>
-      <div>
-        {poke.stats.map((stat: PokemonStat) => (
-          <StatContainer key={stat.name}>
-            <StatName>{stat.name}</StatName>
-            <StatBarBackground>
-              <StatBarFill value={stat.value} />
-            </StatBarBackground>
-          </StatContainer>
-        ))}
-      </div>
+        {/* Informações básicas */}
+        <InfoGrid>
+          <InfoItem>
+            <FaWeight /> Peso: {poke.weight / 10} kg
+          </InfoItem>
+          <InfoItem>
+            <FaRulerVertical /> Altura: {poke.height / 10} m
+          </InfoItem>
+          <InfoItem>
+            💎 Habilidades: {poke.abilities?.join(', ')}
+          </InfoItem>
+        </InfoGrid>
+
+        {/* Descrição */}
+        <DescriptionTitle>Estatísticas</DescriptionTitle>
+        <div>
+          {poke.stats.map((stat: PokemonStat) => {
+            // Normaliza para 255
+            const normalizedValue = normalizeStat(stat.value);
+
+            return (
+              <StatContainer key={stat.name}>
+                <StatName>
+                  <span>{stat.name}</span>
+                  <StatValue>{stat.value}</StatValue>
+                </StatName>
+                <StatBarBackground>
+                  {/* Passe apenas o valor normalizado */}
+                  <StatBarFill value={normalizedValue} />
+                </StatBarBackground>
+              </StatContainer>
+            );
+          })}
+        </div>
+        {/* Cadeia de evolução (se disponível) */}
+        {poke.evolutions && poke.evolutions.length > 0 && (
+          <>
+            <DescriptionTitle>Cadeia de Evolução</DescriptionTitle>
+            <EvolutionChain>
+              {poke.evolutions.map((evo) => (
+                <EvolutionItem
+                  key={evo.id}
+                  onClick={() => handleEvolutionClick(evo.id)}
+                >
+                  <img src={evo.image} alt={evo.name} />
+                  <span>{evo.name}</span>
+                </EvolutionItem>
+              ))}
+            </EvolutionChain>
+          </>
+        )}
+      </InfoCard>
     </Container>
   );
 }

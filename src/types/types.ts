@@ -10,6 +10,9 @@ export interface FlavorTextEntry {
 
 export interface PokemonSpeciesResponse {
   flavor_text_entries: FlavorTextEntry[];
+  evolution_chain?: {
+    url: string;
+  };
 }
 
 export interface PokemonStatApi {
@@ -28,13 +31,27 @@ export interface PokemonTypeSlot {
   };
 }
 
-// Sprites da API (genérico para suportar official-artwork, showdown, home, etc)
-export interface PokemonSpritesOther {
-  [key: string]: {
-    front_default?: string;
-    front_shiny?: string;
-    [key: string]: any;
+export interface PokemonAbility {
+  ability: {
+    name: string;
   };
+  is_hidden: boolean;
+}
+
+export interface PokemonSpritesOther {
+  'official-artwork': {
+    front_default: string;
+    front_shiny: string;
+  };
+  showdown?: {
+    front_default: string;
+    front_shiny: string;
+  };
+  home?: {
+    front_default: string;
+    front_shiny: string;
+  };
+  [key: string]: any;
 }
 
 export interface PokemonSprites {
@@ -44,13 +61,32 @@ export interface PokemonSprites {
   [key: string]: any;
 }
 
-// Resposta completa do endpoint /pokemon
 export interface PokemonResponse {
   id: number;
   name: string;
   sprites: PokemonSprites;
   types: PokemonTypeSlot[];
   stats?: PokemonStatApi[];
+  weight: number;
+  height: number;
+  abilities: PokemonAbility[];
+  base_experience?: number;
+}
+
+export interface EvolutionChain {
+  chain: {
+    species: {
+      name: string;
+      url: string;
+    };
+    evolves_to: EvolutionChain[];
+  };
+}
+
+export interface EvolutionChainItem {
+  id: number;
+  name: string;
+  image: string;
 }
 
 // =======================
@@ -69,6 +105,11 @@ export interface PokeDetails {
   types: string[];
   description: string;
   stats: PokemonStat[];
+  weight: number;
+  height: number;
+  abilities: string[];
+  base_experience?: number;
+  evolutions?: EvolutionChainItem[];
 }
 
 export interface PokeList {
