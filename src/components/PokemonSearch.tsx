@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchPokeList } from '../services/PokeApi';
-import type { PokeListItem } from '../types/PokeListItem';
+import type { PokeListItem } from '../types/types';
 
 interface PokemonSearchProps {
     onSelect: (name: string) => void;

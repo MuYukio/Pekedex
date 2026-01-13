@@ -1,9 +1,8 @@
-// src/styles/styled.d.ts
+
 import 'styled-components';
 
 declare module 'styled-components' {
   export interface DefaultTheme {
-    // Propriedades existentes
     background: string;
     text: string;
     link: string;
@@ -20,8 +19,6 @@ declare module 'styled-components' {
     primary: string;
     secondary: string;
     hover: string;
-    
-    // Novas propriedades
     border: string;
     cardShadow: string;
     success: string;

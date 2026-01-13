@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Alterado: adicionado useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import type { PokeDetails, PokemonStat } from "../types/types";
 import { fetchPoke } from "../services/PokeApi";
 import {
   Container,
-  Info,
   Title,
   Image,
   ContainerImage,
@@ -24,18 +23,18 @@ import {
   InfoItem,
   ShinyToggleButton,
   EvolutionChain,
-  EvolutionItem, // Adicionado novo componente
+  EvolutionItem, 
   LoadingSpinner,
   ErrorMessage,
   CurrentFormLabel,
   ImageContainer
 } from "./PokeDetails.styled";
 import { FaArrowLeft, FaStar, FaWeight, FaRulerVertical, FaExchangeAlt } from 'react-icons/fa';
-import { getStatColor, normalizeStat } from "../utils/statsNormalizer";
+import { normalizeStat } from "../utils/statsNormalizer";
 
 export function PokeDetails() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate(); // Adicionado hook de navegação
+  const navigate = useNavigate();
   const [poke, setPoke] = useState<PokeDetails | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -63,7 +62,6 @@ export function PokeDetails() {
     setIsShiny(!isShiny);
   };
 
-  // Função para navegar para outro Pokémon
   const handleEvolutionClick = (evolutionId: number) => {
     navigate(`/pokemon/${evolutionId}`);
   };
@@ -82,13 +80,10 @@ export function PokeDetails() {
       </BackButton>
 
       <InfoCard>
-        {/* Header com número e nome */}
         <Title>
           <Number>#{poke.id.toString().padStart(3, '0')}</Number>
           {poke.name}
         </Title>
-
-        {/* Tipos do Pokémon */}
         <TypesContainer>
           {poke.types?.map((type) => (
             <TypeBadge key={type} type={type}>
@@ -96,8 +91,6 @@ export function PokeDetails() {
             </TypeBadge>
           ))}
         </TypesContainer>
-
-        {/* Container da imagem única */}
         <ContainerImage>
           <ImageContainer>
             <ImageWrapper>
@@ -121,8 +114,6 @@ export function PokeDetails() {
             </ShinyToggleButton>
           </ImageContainer>
         </ContainerImage>
-
-        {/* Informações básicas */}
         <InfoGrid>
           <InfoItem>
             <FaWeight /> Peso: {poke.weight / 10} kg
@@ -135,11 +126,9 @@ export function PokeDetails() {
           </InfoItem>
         </InfoGrid>
 
-        {/* Descrição */}
         <DescriptionTitle>Estatísticas</DescriptionTitle>
         <div>
           {poke.stats.map((stat: PokemonStat) => {
-            // Normaliza para 255
             const normalizedValue = normalizeStat(stat.value);
 
             return (
@@ -149,14 +138,13 @@ export function PokeDetails() {
                   <StatValue>{stat.value}</StatValue>
                 </StatName>
                 <StatBarBackground>
-                  {/* Passe apenas o valor normalizado */}
                   <StatBarFill value={normalizedValue} />
                 </StatBarBackground>
               </StatContainer>
             );
           })}
         </div>
-        {/* Cadeia de evolução (se disponível) */}
+
         {poke.evolutions && poke.evolutions.length > 0 && (
           <>
             <DescriptionTitle>Cadeia de Evolução</DescriptionTitle>
