@@ -8,7 +8,6 @@ export const lightTheme = {
   buttonBackground: 'linear-gradient(135deg, #7e57c2 0%, #673ab7 100%)',
   buttonColor: '#ffffff',
   fundo: '/src/image/floresta.jpg',
-  // Logo original restaurada
   logo: '/src/image/pokebola.png',
   pokeNumber: '#6c757d',
   primary: '#673ab7',
@@ -19,6 +18,8 @@ export const lightTheme = {
   success: '#4caf50',
   warning: '#ff9800',
   danger: '#f44336',
+  text: '#1c1c1c',    
+  link: '#673ab7', 
   typeColors: {
     normal: '#A8A878',
     fire: '#F08030',
@@ -38,6 +39,7 @@ export const lightTheme = {
     dragon: '#7038F8',
     steel: '#B8B8D0',
     fairy: '#EE99AC',
+    
   }
 };
 export const darkTheme = {
@@ -60,11 +62,13 @@ export const darkTheme = {
   success: '#66bb6a',
   warning: '#ffb74d',
   danger: '#ef5350',
+  text: '#f5f5f5',     
+  link: '#824fd6',
   typeColors: {
     normal: '#C6C6A7',
     fire: '#c02c2c',
-    water: '#9DB7F5',
-    electric: '#FAE078',
+    water: '#3865cf',
+    electric: '#ecc734',
     grass: '#78cc4f',
     ice: '#74c0c0',
     fighting: '#ad443f',

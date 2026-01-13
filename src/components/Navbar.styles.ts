@@ -45,7 +45,7 @@ export const Logo = styled.img`
 
 export const Title = styled.h1`
   font-size: 2.2rem;
-  color: ${({ theme }) => theme.primary}; /* COR ÚNICA - usando a cor primary do tema */
+  color: ${({ theme }) => theme.primary};
   margin: 0;
   font-weight: 800;
   letter-spacing: 1px;
@@ -53,7 +53,6 @@ export const Title = styled.h1`
   position: relative;
   padding-left: 10px;
 
-  /* Linha decorativa ao lado do texto */
   &::before {
     content: '';
     position: absolute;
@@ -71,7 +70,7 @@ export const Title = styled.h1`
     text-align: center;
     
     &::before {
-      display: none; /* Esconde a linha em mobile */
+      display: none; 
     }
   }
 `;
