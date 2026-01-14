@@ -175,7 +175,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       <ThemeToggleButton onClick={toggleTheme} title={darkMode ? "Modo Claro" : "Modo Escuro"}>
         <ThemeIcon
-          src={darkMode ? "/src/image/umbreon.png" : "/src/image/espeon.png"}
+          src={darkMode ? "image/umbreon.png" : "image/espeon.png"}
           alt={darkMode ? "Tema claro" : "Tema escuro"}
         />
       </ThemeToggleButton>
